@@ -1,0 +1,4 @@
+results
+.ipynb_checkpoints
+data/other_gwas/
+data/__pycache__
