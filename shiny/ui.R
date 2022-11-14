@@ -21,14 +21,14 @@ side_panel <- function() {
   ))
 }
 
-many_newlines <- function(n) ifelse(n > 0, {HTML(strrep("<br/>", n))}, {HTML(strrep("<nobr/>", -n))} )
+# many_newlines <- function(n) ifelse(n > 0, { HTML(strrep("<br/>", n))}, {HTML(strrep("<nobr/>", -n)) } )
 
 many_newlines <- function(n) {
-  HTML(strrep("<br/>", n))
+ HTML(strrep("<br/>", n))
 }
-
+ 
 many_non_newlines <- function(n) {
-  HTML(strrep("<nobr/>", n))
+ HTML(strrep("<nobr/>", n))
 }
   
 ######################################################
@@ -42,12 +42,17 @@ main_panel <- function() {
      
      conditionalPanel(
        condition = "input.controlPanel == \"loci\"",
+       
        DT::dataTableOutput("genetic_loci_dt"),
+       # verbatimTextOutput("tt"),
+       
+       imageOutput("manhattan", width="20px"),
        imageOutput("meshes", width="20px"),
        many_non_newlines(1000),
+       
        imageOutput("locuszoom", width="20px"),
-       many_newlines(20),
-       imageOutput("manhattan", width="20px"),
+       many_newlines(20)
+       
      ),
      
      conditionalPanel(

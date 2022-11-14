@@ -19,8 +19,8 @@ fetch_mlflow <- function(experiment_id="1") {
 
 g <- glue::glue
 results_dir <- "~/01_repos/CardiacGWAS/results"
-coma_runs_df <- "{results_dir}/good_runs.csv" %>% glue::glue() %>% read.csv()
-gwas_across_runs_df <- "{results_dir}/gwas_loci_summary_across_runs.csv" %>% glue::glue() %>% read.csv()
+coma_runs_df <- "{results_dir}/good_runs.csv" %>% g() %>% read.csv()
+gwas_across_runs_df <- "{results_dir}/gwas_loci_summary_across_runs.csv" %>% g() %>% read.csv()
 previous_gwas_df <- read.csv(g("{results_dir}/log10p_for_selected_snps_across_gwas.csv"))
 
 loci <- c(
