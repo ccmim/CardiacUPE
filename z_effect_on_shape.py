@@ -48,12 +48,11 @@ from tqdm import tqdm
 
 import pandas as pd
 
-import pyvista as pv
-from ipywidgets import interact, interactive, fixed, interact_manual
-
 from auxiliary import load_data
 from auxiliary import get_model_pretrained_weights
 from typing import Sequence, Dict
+
+from image_helpers import merge_pngs
 
 from PIL import Image
 import imageio
@@ -62,7 +61,7 @@ import random
 
 def load_mesh_data():
     
-    global meshes, procrustes_transforms
+    # global meshes, procrustes_transforms
     print("Loading mesh data...")
     meshes = pkl.load(open(f"{CARDIAC_COMA_REPO}/data/cardio/LV_meshes_at_ED_35k.pkl", "rb"))
     print("Mesh data loaded successfully.")
@@ -70,44 +69,8 @@ def load_mesh_data():
     print("Loading Procrustes transforms...")
     procrustes_transforms = pkl.load(open(f"{CARDIAC_COMA_REPO}/data/cardio/procrustes_transforms_35k.pkl", "rb"))
     print("Procrustes transform loaded successfully.")
+    return meshes, procrustes_transforms
     
-
-def merge_pngs(pngs, output_png, how):
-    # https://www.tutorialspoint.com/python_pillow/Python_pillow_merging_images.htm
-    
-    # Read images    
-    images = [Image.open(png) for png in pngs]    
-    
-    x_sizes = [image.size[0] for image in images]
-    y_sizes = [image.size[1] for image in images]
-    
-    if how == "vertically":      
-      y_size = sum(y_sizes)  
-      x_size = images[0].size[0]      
-      y_sizes.insert(0, 0)      
-      y_positions = np.cumsum(y_sizes[:-1])    
-      positions = [(0, y_position) for y_position in y_positions]
-    
-    elif how == "horizontally":
-      x_size = sum(x_sizes)      
-      y_size = images[0].size[1]      
-      x_sizes.insert(0, 0)      
-      x_positions = np.cumsum(x_sizes[:-1])    
-      positions = [(x_position, 0) for x_position in x_positions]
-    
-    
-    new_image = Image.new(
-        mode='RGB',
-        size=(x_size, y_size),
-        color=(250, 250, 250)
-    )
-    
-    for i, image in enumerate(images):        
-        new_image.paste(image, positions[i])
-        
-    new_image.save(output_png, "PNG")
-
-
 
 def get_ids_in_range(z: pd.Series, q0: float, q1: float):
     '''
@@ -163,7 +126,7 @@ def plot_mesh(mesh, faces, ofilename):#, camera=(300, 0.0, 0.0):
         mesh, show_edges=False, point_size=1.5, color=color_palette[0], opacity=0.5
     )
     
-    pl.screenshot(ofilename)
+    pl.screenshot(ofilename);  
 
   
 # pv.set_plot_theme("document")
@@ -171,11 +134,9 @@ def plot_mesh(mesh, faces, ofilename):#, camera=(300, 0.0, 0.0):
 # random.shuffle(color_palette)
 
 
-if __name__ == "__main__":
-
-    VERBOSE = False
+def main():
     
-    load_mesh_data()
+    meshes, procrustes_transforms = load_mesh_data()
     
     good_runs_df = pd.read_csv(f"{CARDIAC_GWAS_REPO}/results/good_runs.csv")
     run_ids = good_runs_df.run_id.to_list()
@@ -188,13 +149,15 @@ if __name__ == "__main__":
     aligned_meshes = pkl.load(open("lved_aligned_meshes.pkl", "rb"))
     rmsd = pkl.load(open("lved_rmsd.pkl", "rb"))
                             
-    
+    exp_id = "1"
+    q_ranges = [(0.00, 0.01), (0.095, 0.105), (0.45, 0.55), (0.895, 0.905), (0.99, 1.0)]
+
     for run_id in sorted(os.listdir(f"{CARDIAC_COMA_REPO}/mlruns/1")):
-        
+
         try:
             z_filepath = f"{MLRUNS_DIR}/{exp_id}/{run_id}/artifacts/output/latent_vector.csv"
             zs = pd.read_csv(z_filepath, index_col="ID").columns
-        except:
+        except: # FileNotFoundError:
             continue
             
         for z in zs:
@@ -235,5 +198,21 @@ if __name__ == "__main__":
             except:
                 pass
     
-            
+        #if VERBOSE:
         print(f"{run_id[:5]}")
+
+            
+
+if __name__ == "__main__":
+
+    import warnings 
+    
+    VERBOSE = False
+    WARNINGS = False 
+    
+    if WARNINGS:
+        warnings.filterwarnings('default')    
+    else:
+        warnings.filterwarnings('ignore')
+
+    main()
