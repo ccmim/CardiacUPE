@@ -28,5 +28,7 @@ LOCI_TO_DROP = [
     "chr6_20", 
     "chr6_24", 
     "chr6_25", 
-    "chr6_26"
+    "chr6_26",
+    "chr6_27",
+    "chr6_28",
 ]
