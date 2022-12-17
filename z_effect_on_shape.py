@@ -50,7 +50,7 @@ import pandas as pd
 
 from auxiliary import load_data
 from auxiliary import get_model_pretrained_weights
-from typing import Sequence, Dict
+from typing import Sequence, Dict, List, Tuple
 
 from image_helpers import merge_pngs
 
@@ -59,17 +59,24 @@ import imageio
 import random
 
 
-def load_mesh_data():
+def load_mesh_data() -> Tuple[List[str], Dict[str, np.array], np.array, Dict[str, Dict[str, np.array]]]:
+    
+    '''
+    return:
+      tuple of (ids: List[str], meshes: np.array, faces: np.array, procrustes_transforms: Dict[str, Dict[str, np.array])
+    '''
     
     # global meshes, procrustes_transforms
     print("Loading mesh data...")
     meshes = pkl.load(open(f"{CARDIAC_COMA_REPO}/data/cardio/LV_meshes_at_ED_35k.pkl", "rb"))
+    faces, _ = pkl.load(open(f"{CARDIAC_COMA_REPO}/data/cardio/faces_and_downsampling_mtx_frac_0.1_LV.pkl", "rb")).values()
+    ids = [ str(id) for id in meshes ] 
     print("Mesh data loaded successfully.")
     
     print("Loading Procrustes transforms...")
     procrustes_transforms = pkl.load(open(f"{CARDIAC_COMA_REPO}/data/cardio/procrustes_transforms_35k.pkl", "rb"))
     print("Procrustes transform loaded successfully.")
-    return meshes, procrustes_transforms
+    return ids, meshes, faces, procrustes_transforms
     
 
 def get_ids_in_range(z: pd.Series, q0: float, q1: float):
