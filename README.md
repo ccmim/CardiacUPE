@@ -1,8 +1,8 @@
-# Cardiac GWAS
+# Cardiac Unsupervised Phenotype Ensembles
 
 ### Contents
 
-This repository contains the code for the paper _Unsupervised ensemble-based phenotyping helps enhance the discoverability of genes related to heart morphology_.
+This repository contains the code for the paper _Unsupervised ensemble-based phenotyping enhances the discoverability of genes related to left-ventricular morphology_.
 
 It contains two main Git submodules:  1) `CardiacCOMA` and 2) `GWAS_pipeline`.
 1) implements the convolutional mesh autoencoder (CoMA). It performs the training of the network and, importantly, produces the $\textbf{z}$ latent vectors that are used as phenotypes in the subsequent GWAS. The network is implemented in `pyTorch` and `pytorch-lightning`. All run data is logged as artifacts using MLflow.
