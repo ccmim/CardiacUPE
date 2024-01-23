@@ -76,9 +76,9 @@ id4.1.1 -- GWAS --> id5
 
 id5.1(Manhattan & QQ plots)
 id5.2(Gene-level summary statistics)
-id5.3(Heritability)
+id5.3(Gene ontology term enrichment analysis)
 
 id5 -- qqman --> id5.1
 id5 -- SPrediXcan --> id5.2
-id5 -- BOLT-LMM --> id5.3
+id5 -- g:Profiler --> id5.3
 ```
